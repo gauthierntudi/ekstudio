@@ -1,26 +1,188 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #050505;
+  --foreground: #f2f2f0;
+  /* Vert signature des assets EKSTUDIO */
+  --accent: #50bf2c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-accent: var(--accent);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-syne);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+.snap-section {
+  height: 100dvh;
+  min-height: 100dvh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .snap-section {
+    height: auto;
+    min-height: 100dvh;
+  }
+}
+
+.site-header-inner,
+.hero-title-line,
+.hero-lead,
+.hero-beat,
+.hero-cta,
+.hero-bg-slide--a,
+.hero-figure,
+.hero-scroll,
+.hero-bg-slide--b,
+.hero-fig-slide--b,
+.method-label,
+.method-title,
+.method-copy,
+.method-cta,
+.method-page-label,
+.method-page-title,
+.method-page-body,
+.method-step,
+.method-visual,
+.method-deco,
+.studio-cred,
+.studio-title,
+.studio-copy,
+.studio-visual,
+.footer-brand,
+.footer-col,
+.footer-bottom,
+.values-title,
+.values-item,
+.values-cred,
+.values-dots,
+.clients-label,
+.clients-title,
+.clients-marquee,
+.team-bg,
+.team-heading,
+.team-crew,
+.team-scroll,
+.team-cred,
+.team-label,
+.team-lead,
+.team-card,
+.contact-label,
+.contact-title,
+.contact-lead,
+.contact-block,
+.contact-cta,
+.projects-label,
+.projects-title,
+.projects-lead,
+.projects-hero-label,
+.projects-hero-title,
+.projects-hero-lead,
+.projects-hero-meta,
+.project-card,
+.project-row-meta,
+.project-back,
+.project-detail-title,
+.project-shot,
+.project-sticky,
+.project-hero,
+.project-nav,
+.project-dock,
+.project-meta {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header-inner,
+  .hero-title-line,
+  .hero-lead,
+  .hero-beat,
+  .hero-cta,
+  .hero-bg-slide--a,
+  .hero-figure,
+  .hero-scroll,
+  .method-label,
+  .method-title,
+  .method-copy,
+  .method-cta,
+  .method-page-label,
+  .method-page-title,
+  .method-page-body,
+  .method-step,
+  .method-visual,
+  .method-deco,
+  .studio-cred,
+  .studio-title,
+  .studio-copy,
+  .studio-visual,
+  .footer-brand,
+  .footer-col,
+  .footer-bottom,
+  .values-title,
+  .values-item,
+  .values-cred,
+  .values-dots,
+  .clients-label,
+  .clients-title,
+  .clients-marquee,
+  .team-bg,
+  .team-heading,
+  .team-crew,
+  .team-scroll,
+  .team-cred,
+  .team-label,
+  .team-lead,
+  .team-card,
+  .contact-label,
+  .contact-title,
+  .contact-lead,
+  .contact-block,
+  .contact-cta,
+  .projects-label,
+  .projects-title,
+  .projects-lead,
+  .projects-hero-label,
+  .projects-hero-title,
+  .projects-hero-lead,
+  .projects-hero-meta,
+  .project-card,
+  .project-row-meta,
+  .project-back,
+  .project-detail-title,
+  .project-shot,
+  .project-sticky,
+  .project-hero,
+  .project-nav,
+  .project-dock,
+  .project-meta {
+    opacity: 1;
+  }
+
+  .hero-bg-slide--b,
+  .hero-fig-slide--b {
+    opacity: 0;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
