@@ -99,7 +99,8 @@ body {
 .project-hero,
 .project-nav,
 .project-dock,
-.project-meta {
+.project-meta,
+.project-hint {
   opacity: 0;
 }
 
@@ -165,7 +166,8 @@ body {
   .project-hero,
   .project-nav,
   .project-dock,
-  .project-meta {
+  .project-meta,
+  .project-hint {
     opacity: 1;
   }
 

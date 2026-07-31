@@ -1,10 +1,9 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
-import type { TouchEvent as ReactTouchEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { gsap, useGSAP, ScrollTrigger } from "@/lib/gsap";
 import Footer from "@/components/Footer";
 import type { Project } from "@/lib/projects";
@@ -23,15 +22,48 @@ export default function ProjectDetail({
   prev?: Project;
 }) {
   const pageRef = useRef<HTMLElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLButtonElement>(null);
   const handoffRef = useRef<ProjectTransitionPayload | null>(null);
-  const router = useRouter();
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const [activeShot, setActiveShot] = useState(1);
+  const [lightbox, setLightbox] = useState<number | null>(null);
 
-  const galleryImages =
-    project.images.length > 1 ? project.images.slice(1) : [];
-  const totalShots = project.images.length;
+  const shots = project.images;
+  const gallery = shots.slice(1);
+
+  const openLightbox = (index: number) => setLightbox(index);
+  const closeLightbox = () => setLightbox(null);
+
+  const showPrev = useCallback(() => {
+    setLightbox((i) => {
+      if (i === null || shots.length === 0) return i;
+      return (i - 1 + shots.length) % shots.length;
+    });
+  }, [shots.length]);
+
+  const showNext = useCallback(() => {
+    setLightbox((i) => {
+      if (i === null || shots.length === 0) return i;
+      return (i + 1) % shots.length;
+    });
+  }, [shots.length]);
+
+  useEffect(() => {
+    if (lightbox === null) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowLeft") showPrev();
+      if (event.key === "ArrowRight") showNext();
+    };
+
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [lightbox, showPrev, showNext]);
 
   useLayoutEffect(() => {
     const payload = consumeProjectTransition(project.slug);
@@ -105,7 +137,6 @@ export default function ProjectDetail({
             ".project-hero",
             ".project-shot",
             ".project-nav",
-            ".project-dock",
             ".project-meta",
           ],
           { autoAlpha: 1, y: 0, scale: 1 },
@@ -117,92 +148,56 @@ export default function ProjectDetail({
           gsap.fromTo(
             ".project-sticky",
             { autoAlpha: 0, y: -12 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.5,
-              ease: "power3.out",
-            },
+            { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" },
           );
           gsap.fromTo(
             ".project-hero",
-            { autoAlpha: 0, scale: 1.04 },
-            {
-              autoAlpha: 1,
-              scale: 1,
-              duration: 0.9,
-              ease: "power2.out",
-            },
+            { autoAlpha: 0, y: 20 },
+            { autoAlpha: 1, y: 0, duration: 0.75, ease: "power3.out" },
           );
         }
 
         gsap.fromTo(
           ".project-meta",
-          { autoAlpha: 0, y: 14 },
+          { autoAlpha: 0, y: 12 },
           {
             autoAlpha: 1,
             y: 0,
             duration: 0.5,
-            delay: hadHandoff ? 0.35 : 0.15,
+            delay: hadHandoff ? 0.3 : 0.1,
             ease: "power3.out",
           },
         );
 
-        gsap.fromTo(
-          ".project-dock",
-          { autoAlpha: 0, y: 16 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.45,
-            delay: 0.25,
-            ease: "power3.out",
-          },
-        );
-
-        gsap.utils.toArray<HTMLElement>(".project-shot").forEach((shot, i) => {
+        gsap.utils.toArray<HTMLElement>(".project-shot").forEach((shot) => {
           gsap.fromTo(
             shot,
-            { autoAlpha: 0, y: 36 },
+            { autoAlpha: 0, y: 28 },
             {
               autoAlpha: 1,
               y: 0,
-              duration: 0.7,
+              duration: 0.65,
               ease: "power3.out",
               scrollTrigger: {
                 trigger: shot,
-                start: "top 88%",
-                end: "bottom 12%",
-                toggleActions: "play reverse play reverse",
-                onEnter: () => setActiveShot(i + 2),
-                onEnterBack: () => setActiveShot(i + 2),
+                start: "top 90%",
+                toggleActions: "play none none none",
               },
             },
           );
         });
 
-        const heroEl = heroRef.current;
-        if (heroEl) {
-          ScrollTrigger.create({
-            trigger: heroEl,
-            start: "top center",
-            end: "bottom center",
-            onEnter: () => setActiveShot(1),
-            onEnterBack: () => setActiveShot(1),
-          });
-        }
-
         gsap.fromTo(
           ".project-nav",
-          { autoAlpha: 0, y: 18 },
+          { autoAlpha: 0, y: 16 },
           {
             autoAlpha: 1,
             y: 0,
-            duration: 0.55,
+            duration: 0.5,
             scrollTrigger: {
               trigger: ".project-nav",
-              start: "top 92%",
-              toggleActions: "play reverse play reverse",
+              start: "top 94%",
+              toggleActions: "play none none none",
             },
           },
         );
@@ -213,42 +208,9 @@ export default function ProjectDetail({
     { scope: pageRef, dependencies: [project.slug] },
   );
 
-  const onTouchStart = (event: ReactTouchEvent) => {
-    const touch = event.changedTouches[0];
-    if (!touch) return;
-    touchStart.current = { x: touch.clientX, y: touch.clientY };
-  };
-
-  const onTouchEnd = (event: ReactTouchEvent) => {
-    const start = touchStart.current;
-    const touch = event.changedTouches[0];
-    touchStart.current = null;
-    if (!start || !touch) return;
-
-    const dx = touch.clientX - start.x;
-    const dy = touch.clientY - start.y;
-    // Edge-ish horizontal swipe only — avoid fighting vertical scroll
-    if (Math.abs(dx) < 80 || Math.abs(dx) < Math.abs(dy) * 1.35) return;
-
-    if (dx < 0 && next) {
-      router.push(`/projets/${next.slug}`);
-      return;
-    }
-    if (dx > 0 && prev) {
-      router.push(`/projets/${prev.slug}`);
-    }
-  };
-
-  const counter = `${String(activeShot).padStart(2, "0")} / ${String(totalShots).padStart(2, "0")}`;
-
   return (
-    <main
-      ref={pageRef}
-      className="relative bg-black text-white"
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      <section className="relative isolate overflow-hidden pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-0">
+    <main ref={pageRef} className="relative bg-black text-white">
+      <section className="relative isolate overflow-hidden">
         <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
           <Image
             src="/img/bg-black.png"
@@ -260,119 +222,95 @@ export default function ProjectDetail({
           />
         </div>
 
-        {/* Mobile sticky chrome */}
-        <div className="project-sticky sticky top-16 z-30 border-b border-white/10 bg-black/80 px-4 py-3 backdrop-blur-md md:static md:top-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
-          <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 md:px-10 md:pt-32">
-            <div className="flex items-center justify-between gap-3 md:block">
-              <Link
-                href="/projets"
-                className="inline-flex min-h-10 items-center gap-2 text-[0.65rem] font-medium tracking-[0.2em] uppercase text-white/55 transition-colors hover:text-white"
-              >
-                ← Work
-              </Link>
-              <p className="font-mono text-[0.65rem] tracking-[0.12em] text-white/35 md:hidden">
-                {counter}
-              </p>
-            </div>
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pt-24 pb-16 md:px-10 md:pt-32 md:pb-24">
+          <div className="project-sticky">
+            <Link
+              href="/projets"
+              className="inline-flex items-center gap-2 text-[0.7rem] font-medium tracking-[0.2em] uppercase text-white/45 transition-colors hover:text-white"
+            >
+              ← Projets
+            </Link>
 
-            <div className="flex items-end justify-between gap-4">
+            <div className="mt-5 flex flex-col gap-5 md:mt-8 md:flex-row md:items-end md:justify-between">
               <div className="min-w-0">
-                <h1 className="truncate font-display text-[clamp(1.45rem,6vw,4rem)] font-semibold leading-[1.02] tracking-[-0.03em] uppercase text-white md:whitespace-normal md:overflow-visible">
+                <h1 className="font-display text-[clamp(2rem,7vw,4.25rem)] font-semibold leading-[1.02] tracking-[-0.03em] uppercase text-white">
                   {project.title}
                 </h1>
-                <p className="mt-1 hidden text-sm tracking-[0.14em] text-white/45 md:mt-3 md:block">
-                  {totalShots} visuel{totalShots > 1 ? "s" : ""}
-                </p>
+                <div className="project-meta mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <span className="font-mono text-[0.65rem] tracking-[0.14em] text-white/40">
+                    {project.year}
+                  </span>
+                  <span className="text-white/20" aria-hidden>
+                    ·
+                  </span>
+                  <p className="text-sm text-white/55">{project.subtitle}</p>
+                </div>
               </div>
-              <div className="hidden shrink-0 gap-3 text-[0.65rem] tracking-[0.16em] uppercase text-white/35 md:flex">
-                {prev ? (
-                  <Link
-                    href={`/projets/${prev.slug}`}
-                    className="transition-colors hover:text-white"
+
+              <div className="flex flex-wrap gap-1.5">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-white/12 px-3 py-1 text-[0.55rem] tracking-[0.14em] uppercase text-white/55"
                   >
-                    Prev
-                  </Link>
-                ) : null}
-                {next ? (
-                  <Link
-                    href={`/projets/${next.slug}`}
-                    className="transition-colors hover:text-white"
-                  >
-                    Next
-                  </Link>
-                ) : null}
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl md:px-10 md:pb-20">
-          {/* Meta — compact on mobile */}
-          <div className="project-meta flex flex-wrap items-center gap-x-3 gap-y-2 px-4 pt-4 md:mt-6 md:px-0">
-            <span className="font-mono text-[0.65rem] tracking-[0.14em] text-white/40">
-              {project.year}
-            </span>
-            <span className="text-white/20" aria-hidden>
-              ·
-            </span>
-            <p className="text-[0.8rem] text-white/55 md:text-sm">
-              {project.subtitle}
-            </p>
-            <div className="flex w-full flex-wrap gap-1.5 md:ml-auto md:w-auto">
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-white/10 px-2.5 py-1 text-[0.55rem] tracking-[0.14em] uppercase text-white/65"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Hero — taller / full-bleed on mobile */}
-          <div
+          <button
+            type="button"
             ref={heroRef}
-            className="project-hero relative mt-4 aspect-[4/5] w-full overflow-hidden bg-white/5 md:mt-10 md:aspect-[21/9]"
+            onClick={() => openLightbox(0)}
+            className="project-hero group relative mt-8 block w-full cursor-zoom-in overflow-hidden bg-white/[0.03] text-left md:mt-12"
           >
             <Image
               src={project.cover}
               alt={project.title}
-              fill
+              width={2000}
+              height={1400}
               priority
-              className="object-cover"
+              className="h-auto w-full object-contain transition-opacity duration-300 group-hover:opacity-90"
               sizes="100vw"
             />
-          </div>
+            <span className="pointer-events-none absolute right-3 bottom-3 rounded-full bg-black/55 px-3 py-1 text-[0.6rem] tracking-[0.14em] uppercase text-white/70 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 md:right-4 md:bottom-4">
+              Agrandir
+            </span>
+          </button>
 
-          {galleryImages.length > 0 ? (
-            <div className="mt-1.5 flex flex-col gap-1.5 md:mt-10 md:columns-2 md:gap-0 md:block md:[column-gap:1.25rem] lg:[column-gap:1.5rem]">
-              {galleryImages.map((src, index) => (
-                <figure
+          {gallery.length > 0 ? (
+            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:mt-5 md:gap-5">
+              {gallery.map((src, index) => (
+                <button
                   key={src}
-                  className="project-shot break-inside-avoid md:mb-5 lg:mb-6"
+                  type="button"
+                  onClick={() => openLightbox(index + 1)}
+                  className={`project-shot group relative cursor-zoom-in overflow-hidden bg-white/[0.03] text-left ${
+                    gallery.length % 2 === 1 && index === gallery.length - 1
+                      ? "sm:col-span-2"
+                      : ""
+                  }`}
                 >
-                  <div className="relative w-full overflow-hidden bg-white/5">
-                    <Image
-                      src={src}
-                      alt={`${project.title} — ${String(index + 2).padStart(2, "0")}`}
-                      width={1600}
-                      height={2000}
-                      className="h-auto w-full object-cover"
-                      sizes="100vw"
-                    />
-                  </div>
-                </figure>
+                  <Image
+                    src={src}
+                    alt={`${project.title} — ${String(index + 2).padStart(2, "0")}`}
+                    width={1600}
+                    height={2000}
+                    className="h-auto w-full object-contain transition-opacity duration-300 group-hover:opacity-90"
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                  />
+                </button>
               ))}
             </div>
           ) : null}
 
-          {/* Desktop footer nav */}
-          <div className="project-nav mt-14 hidden border-t border-white/10 px-0 pt-8 md:flex md:flex-row md:items-center md:justify-between">
+          <div className="project-nav mt-14 flex flex-col gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
             {prev ? (
               <Link
                 href={`/projets/${prev.slug}`}
-                className="text-sm text-white/55 transition-colors hover:text-[color:var(--accent)]"
+                className="text-sm text-white/50 transition-colors hover:text-[color:var(--accent)]"
               >
                 ← {prev.title}
               </Link>
@@ -382,7 +320,7 @@ export default function ProjectDetail({
             {next ? (
               <Link
                 href={`/projets/${next.slug}`}
-                className="text-sm text-white/55 transition-colors hover:text-[color:var(--accent)] sm:text-right"
+                className="text-sm text-white/50 transition-colors hover:text-[color:var(--accent)] sm:text-right"
               >
                 {next.title} →
               </Link>
@@ -391,50 +329,83 @@ export default function ProjectDetail({
         </div>
       </section>
 
-      {/* Mobile bottom dock */}
-      <div className="project-dock fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/85 px-3 pt-2 backdrop-blur-md md:hidden pb-[max(0.65rem,env(safe-area-inset-bottom))]">
-        <div className="mx-auto flex max-w-7xl items-center gap-2">
-          {prev ? (
-            <Link
-              href={`/projets/${prev.slug}`}
-              className="flex min-h-12 min-w-0 flex-1 items-center gap-2 rounded-xl bg-white/5 px-3 py-2 active:bg-white/10"
-            >
-              <span className="shrink-0 text-white/40" aria-hidden>
-                ←
-              </span>
-              <span className="truncate text-[0.7rem] tracking-[0.04em] uppercase text-white/75">
-                {prev.title}
-              </span>
-            </Link>
-          ) : (
-            <span className="flex-1" />
-          )}
+      <Footer />
 
-          <p className="shrink-0 px-1 font-mono text-[0.6rem] tracking-[0.14em] text-white/35">
-            {counter}
-          </p>
-
-          {next ? (
-            <Link
-              href={`/projets/${next.slug}`}
-              className="flex min-h-12 min-w-0 flex-1 items-center justify-end gap-2 rounded-xl bg-white/5 px-3 py-2 text-right active:bg-white/10"
+      {lightbox !== null ? (
+        <div
+          className="fixed inset-0 z-[100] flex flex-col bg-black/95"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Visuel ${lightbox + 1} sur ${shots.length}`}
+        >
+          <div className="flex items-center justify-between gap-3 px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-3 md:px-6">
+            <p className="font-mono text-[0.7rem] tracking-[0.14em] text-white/45">
+              {String(lightbox + 1).padStart(2, "0")} /{" "}
+              {String(shots.length).padStart(2, "0")}
+            </p>
+            <p className="truncate text-[0.7rem] tracking-[0.16em] uppercase text-white/50">
+              {project.title}
+            </p>
+            <button
+              type="button"
+              onClick={closeLightbox}
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:bg-white/10"
+              aria-label="Fermer"
             >
-              <span className="truncate text-[0.7rem] tracking-[0.04em] uppercase text-white/75">
-                {next.title}
-              </span>
-              <span className="shrink-0 text-white/40" aria-hidden>
-                →
-              </span>
-            </Link>
-          ) : (
-            <span className="flex-1" />
-          )}
+              <X className="h-5 w-5" strokeWidth={1.75} />
+            </button>
+          </div>
+
+          <div
+            className="relative flex min-h-0 flex-1 items-center justify-center px-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:px-14"
+            onClick={closeLightbox}
+          >
+            {shots.length > 1 ? (
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  showPrev();
+                }}
+                className="absolute top-1/2 left-2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-white/10 md:left-4"
+                aria-label="Image précédente"
+              >
+                <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
+              </button>
+            ) : null}
+
+            <div
+              className="relative h-[calc(100svh-7.5rem)] w-full"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <Image
+                key={shots[lightbox]}
+                src={shots[lightbox]!}
+                alt={`${project.title} — ${String(lightbox + 1).padStart(2, "0")}`}
+                fill
+                className="object-contain"
+                sizes="100vw"
+                priority
+                quality={95}
+              />
+            </div>
+
+            {shots.length > 1 ? (
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  showNext();
+                }}
+                className="absolute top-1/2 right-2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-white/10 md:right-4"
+                aria-label="Image suivante"
+              >
+                <ChevronRight className="h-6 w-6" strokeWidth={1.75} />
+              </button>
+            ) : null}
+          </div>
         </div>
-      </div>
-
-      <div className="hidden md:block">
-        <Footer />
-      </div>
+      ) : null}
     </main>
   );
 }
