@@ -54,6 +54,11 @@ const TEAM: Member[] = [
     index: "04",
     name: "BAMPANGIDI Clément",
     role: "Digital Manager",
+    profile: [
+      "Stratège du digital et fin analyste des performances, BAMPANGIDI Clément pilote la présence numérique des marques avec méthode et efficacité. Certifié en marketing digital à l’international, il a accompagné des entreprises issues de secteurs variés, en gérant d’importants budgets publicitaires et en optimisant leur retour sur investissement.",
+      "Il conçoit le digital comme un levier de croissance mesurable, où créativité et data avancent ensemble. Son approche : diagnostiquer, structurer, activer et optimiser.",
+      "Des stratégies digitales qui soignent les marques et délivrent des résultats concrets.",
+    ],
   },
   {
     photo: "/team/5.png",
