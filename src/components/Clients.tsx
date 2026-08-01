@@ -98,11 +98,11 @@ export default function Clients() {
           <span className="text-[color:var(--accent)]">confiance</span>
         </h2>
 
-        <ul className="mt-12 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 md:mt-16 md:grid-cols-4 md:gap-x-10 md:gap-y-12 lg:grid-cols-5">
+        <ul className="mt-12 grid grid-cols-3 gap-x-5 gap-y-7 sm:gap-x-8 sm:gap-y-10 md:mt-16 md:grid-cols-4 md:gap-x-10 md:gap-y-12 lg:grid-cols-5">
           {CLIENTS.map((src) => (
             <li
               key={src}
-              className="clients-logo relative flex h-14 items-center justify-center md:h-16"
+              className="clients-logo relative flex h-9 items-center justify-center sm:h-12 md:h-16"
             >
               <Image
                 src={src}
