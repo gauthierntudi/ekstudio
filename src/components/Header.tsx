@@ -117,6 +117,7 @@ export default function Header() {
           href="/"
           className="relative block w-[9.5rem] shrink-0 md:w-[11.5rem]"
           aria-label="EK studio — accueil"
+          onClick={() => setOpen(false)}
         >
           <Image
             src={onLight && !open ? "/img/logo-ek.png" : "/img/logo-ek-white.png"}

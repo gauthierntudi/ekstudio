@@ -1,9 +1,10 @@
 export const NAV_LINKS = [
-  { href: "/methode", label: "Méthode", index: "01" },
-  { href: "#clients", label: "Clients", index: "02" },
-  { href: "/projets", label: "Projets", index: "03" },
-  { href: "/equipe", label: "Équipe", index: "04" },
-  { href: "/contact", label: "Contact", index: "05" },
+  { href: "/", label: "Accueil", index: "01" },
+  { href: "/methode", label: "Méthode", index: "02" },
+  { href: "#clients", label: "Clients", index: "03" },
+  { href: "/projets", label: "Projets", index: "04" },
+  { href: "/equipe", label: "Équipe", index: "05" },
+  { href: "/contact", label: "Contact", index: "06" },
 ] as const;
 
 export const SOCIALS = [
