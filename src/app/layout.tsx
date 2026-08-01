@@ -38,11 +38,6 @@ export const metadata: Metadata = {
     "vidéographie",
     "motion design",
   ],
-  icons: {
-    icon: [{ url: "/img/icon.png", type: "image/png", sizes: "512x512" }],
-    apple: [{ url: "/img/icon.png", type: "image/png", sizes: "512x512" }],
-    shortcut: "/img/icon.png",
-  },
   openGraph: {
     type: "website",
     locale: "fr_FR",
@@ -50,21 +45,11 @@ export const metadata: Metadata = {
     siteName: siteTitle,
     title: siteTitle,
     description: siteDescription,
-    images: [
-      {
-        url: "/img/icon.png",
-        width: 512,
-        height: 512,
-        alt: "EK STUDIO",
-        type: "image/png",
-      },
-    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: siteTitle,
     description: siteDescription,
-    images: ["/img/icon.png"],
   },
   alternates: {
     canonical: "/",
