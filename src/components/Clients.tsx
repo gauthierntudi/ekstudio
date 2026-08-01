@@ -18,6 +18,8 @@ const CLIENTS = [
   "/clients/011.png",
   "/clients/012.png",
   "/clients/013.png",
+  "/clients/014.png",
+  "/clients/015.png",
 ];
 
 export default function Clients() {

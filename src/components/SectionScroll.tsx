@@ -12,10 +12,19 @@ export default function SectionScroll() {
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
 
     const getSections = () =>
       gsap.utils.toArray<HTMLElement>(SECTION_SELECTOR);
+
+    if (reduced) {
+      const id = window.location.hash.replace(/^#/, "");
+      if (id) {
+        requestAnimationFrame(() => {
+          document.getElementById(id)?.scrollIntoView({ behavior: "auto" });
+        });
+      }
+      return;
+    }
 
     const isMobile = () =>
       window.matchMedia("(max-width: 768px), (pointer: coarse)").matches;
@@ -100,7 +109,6 @@ export default function SectionScroll() {
       },
     });
 
-    // Lower tolerance = less "dead zone" before the section moves
     const touchObserver = Observer.create({
       type: "touch",
       tolerance: 10,
@@ -116,17 +124,47 @@ export default function SectionScroll() {
       },
     });
 
-    const onAnchorClick = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement | null)?.closest("a[href^='#']");
-      if (!target) return;
-      const href = target.getAttribute("href");
-      if (!href || href === "#") return;
-      const id = href.slice(1);
+    const goToHash = () => {
+      const id = window.location.hash.replace(/^#/, "");
+      if (!id) return;
       const sections = getSections();
       const index = sections.findIndex((s) => s.id === id);
       if (index < 0) return;
+      animating.current = false;
+      lastNavAt.current = 0;
+      // Delay so Next.js client navigation / layout can settle
+      gsap.delayedCall(0.08, () => {
+        goTo(index);
+      });
+    };
+
+    goToHash();
+
+    const onAnchorClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement | null)?.closest("a[href*='#']");
+      if (!target) return;
+      const href = target.getAttribute("href");
+      if (!href || href === "#") return;
+
+      const hashIndex = href.indexOf("#");
+      if (hashIndex < 0) return;
+      const id = href.slice(hashIndex + 1);
+      if (!id) return;
+
+      const path = href.slice(0, hashIndex);
+      const onHome =
+        window.location.pathname === "/" || window.location.pathname === "";
+      const targetsHome =
+        path === "" || path === "/" || path === window.location.pathname;
+
+      if (!onHome || !targetsHome) return;
+
+      const sections = getSections();
+      const index = sections.findIndex((s) => s.id === id);
+      if (index < 0) return;
+
       e.preventDefault();
-      history.pushState(null, "", href);
+      history.pushState(null, "", `#${id}`);
       animating.current = false;
       goTo(index);
     };
@@ -142,6 +180,7 @@ export default function SectionScroll() {
 
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onScrollEnd, { passive: true });
+    window.addEventListener("hashchange", goToHash);
     document.addEventListener("click", onAnchorClick);
 
     return () => {
@@ -150,6 +189,7 @@ export default function SectionScroll() {
       unlockCall?.kill();
       window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", onScrollEnd);
+      window.removeEventListener("hashchange", goToHash);
       document.removeEventListener("click", onAnchorClick);
       gsap.killTweensOf(window);
     };
