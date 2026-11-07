@@ -1,16 +1,38 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Syne } from "next/font/google";
+import localFont from "next/font/local";
 import Header from "@/components/Header";
+import SmoothScroll from "@/components/SmoothScroll";
+import "lenis/dist/lenis.css";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-body",
-  subsets: ["latin"],
+const manrope = localFont({
+  variable: "--ff-manrope",
+  display: "swap",
+  src: [
+    { path: "./fonts/Manrope-Light.ttf", weight: "300", style: "normal" },
+    { path: "./fonts/Manrope-Regular.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/Manrope-Medium.ttf", weight: "500", style: "normal" },
+    { path: "./fonts/Manrope-SemiBold.ttf", weight: "600", style: "normal" },
+    { path: "./fonts/Manrope-Bold.ttf", weight: "700", style: "normal" },
+    { path: "./fonts/Manrope-ExtraBold.ttf", weight: "800", style: "normal" },
+  ],
 });
 
-const syne = Syne({
-  variable: "--font-syne",
-  subsets: ["latin"],
+const monument = localFont({
+  variable: "--ff-monument",
+  display: "swap",
+  src: [
+    {
+      path: "./fonts/MonumentExtended-Regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/MonumentExtended-Ultrabold.otf",
+      weight: "800",
+      style: "normal",
+    },
+  ],
 });
 
 const siteUrl = "https://ekstudio-cd.com";
@@ -68,9 +90,10 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${spaceGrotesk.variable} ${syne.variable} h-full antialiased`}
+      className={`${manrope.variable} ${monument.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
+        <SmoothScroll />
         <Header />
         {children}
       </body>

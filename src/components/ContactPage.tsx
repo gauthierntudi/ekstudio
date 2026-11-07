@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { gsap, useGSAP } from "@/lib/gsap";
+import CtaButton from "@/components/CtaButton";
 import { CONTACT, SOCIALS } from "@/data/site";
 import Footer from "@/components/Footer";
 
@@ -85,15 +86,17 @@ export default function ContactPage() {
           />
         </div>
         <div
-          className="pointer-events-none absolute inset-0 z-0 hidden bg-[url('/img/bg-orange.png')] bg-cover bg-center bg-no-repeat bg-fixed md:block"
+          className="pointer-events-none absolute inset-0 z-0 hidden [clip-path:inset(0)] md:block"
           aria-hidden
-        />
+        >
+          <div className="fixed inset-0 bg-[url('/img/bg-orange.png')] bg-cover bg-center bg-no-repeat" />
+        </div>
 
         <div className="relative z-10 mx-auto flex min-h-svh w-full max-w-7xl flex-col justify-center px-6 py-28 md:min-h-dvh md:px-10 md:py-32">
           <p className="contact-label text-[0.7rem] font-medium tracking-[0.22em] uppercase text-white/45">
             Contact
           </p>
-          <h1 className="contact-title mt-4 max-w-[14ch] font-display text-[clamp(2.25rem,7vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.03em] uppercase text-white">
+          <h1 className="contact-title mt-4 max-w-[14ch] font-display text-[clamp(2.25rem,7vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-white">
             Parlons de
             <br />
             votre{" "}
@@ -173,24 +176,9 @@ export default function ContactPage() {
           </div>
 
           <div className="contact-cta mt-12 md:mt-16">
-            <a
-              href={`mailto:${CONTACT.emails[0]}`}
-              className="group relative inline-flex"
-            >
-              <span
-                aria-hidden
-                className="absolute top-1.5 left-1.5 h-full w-full border border-white bg-transparent transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:translate-y-0.5"
-              />
-              <span className="relative z-10 flex items-center bg-black px-6 py-3.5 font-display text-sm font-semibold tracking-[0.16em] uppercase text-white transition-[transform,background-color,color] duration-300 ease-out group-hover:-translate-y-0.5 group-hover:bg-white group-hover:text-black md:px-7 md:text-[0.8125rem]">
-                Écrire au studio
-              </span>
-              <span
-                aria-hidden
-                className="relative z-10 flex w-12 items-center justify-center overflow-hidden bg-white text-black transition-[transform,background-color,color] duration-300 ease-out group-hover:-translate-y-0.5 group-hover:bg-black group-hover:text-white md:w-14"
-              >
-                →
-              </span>
-            </a>
+            <CtaButton href={`mailto:${CONTACT.emails[0]}`}>
+              Écrire au studio
+            </CtaButton>
           </div>
 
           <p className="contact-block mt-10 text-sm text-white/40">

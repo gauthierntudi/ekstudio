@@ -87,7 +87,7 @@ function StepBlock({
   return (
     <article className="method-step space-y-2.5">
       <h2
-        className={`font-display text-[clamp(1.15rem,2.4vw,1.65rem)] font-semibold leading-tight tracking-[-0.02em] uppercase ${
+        className={`font-display text-[clamp(1.15rem,2.4vw,1.65rem)] font-semibold leading-tight tracking-[-0.02em] ${
           onLight ? "text-black" : "text-[color:var(--accent)]"
         }`}
       >
@@ -275,9 +275,11 @@ export default function MethodPage() {
         </div>
         {/* Desktop: fond fixed */}
         <div
-          className="pointer-events-none absolute inset-0 z-0 hidden bg-[url('/img/bg-green.png')] bg-cover bg-center bg-no-repeat bg-fixed md:block"
+          className="pointer-events-none absolute inset-0 z-0 hidden [clip-path:inset(0)] md:block"
           aria-hidden
-        />
+        >
+          <div className="fixed inset-0 bg-[url('/img/bg-green.png')] bg-cover bg-center bg-no-repeat" />
+        </div>
 
         <Credentials side="left" />
 
@@ -310,7 +312,7 @@ export default function MethodPage() {
 
         <div className="relative z-10 mx-auto flex min-h-svh w-full max-w-7xl flex-col px-6 pt-28 pb-0 md:min-h-dvh md:grid md:grid-cols-12 md:items-center md:px-10 md:py-24">
           <div className="md:col-span-7 lg:col-span-6">
-            <h1 className="method-page-title font-display text-[clamp(1.85rem,5vw,3.25rem)] font-semibold leading-[1.05] tracking-[-0.03em] uppercase text-black">
+            <h1 className="method-page-title font-display text-[clamp(1.85rem,5vw,3.25rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-black">
               Méthodologie
               <br />
               de travail
@@ -363,9 +365,11 @@ export default function MethodPage() {
           />
         </div>
         <div
-          className="pointer-events-none absolute inset-0 z-0 hidden bg-[url('/img/bg-black.png')] bg-cover bg-center bg-no-repeat bg-fixed md:block"
+          className="pointer-events-none absolute inset-0 z-0 hidden [clip-path:inset(0)] md:block"
           aria-hidden
-        />
+        >
+          <div className="fixed inset-0 bg-[url('/img/bg-black.png')] bg-cover bg-center bg-no-repeat" />
+        </div>
 
         <Credentials side="right" />
 

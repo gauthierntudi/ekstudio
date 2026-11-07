@@ -148,7 +148,7 @@ export default function Values() {
       </div>
 
       <div className="relative z-10 mx-auto flex h-full w-full max-w-7xl flex-col justify-center px-0 py-20 md:px-10 md:py-16">
-        <h2 className="values-title max-w-[18ch] px-6 text-left font-display text-[clamp(1.55rem,4vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em] uppercase text-white md:px-0">
+        <h2 className="values-title max-w-[18ch] px-6 text-left font-display text-[clamp(1.55rem,4vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-white md:px-0">
           Les valeurs qui nous définissent
         </h2>
 
@@ -170,7 +170,7 @@ export default function Values() {
                   sizes="112px"
                 />
               </div>
-              <h3 className="font-display text-[clamp(1.25rem,2.5vw,1.75rem)] font-semibold tracking-[-0.02em] uppercase text-white">
+              <h3 className="font-display text-[clamp(1.25rem,2.5vw,1.75rem)] font-semibold tracking-[-0.02em] text-white">
                 {value.title}
               </h3>
               <p className="mt-3 max-w-[36ch] text-sm leading-snug text-white/70 md:mt-4 md:text-[0.9375rem] md:leading-snug">

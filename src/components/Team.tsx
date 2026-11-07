@@ -119,10 +119,10 @@ const TEAM: Member[] = [
   },
 ];
 
-const DECODE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*";
+const DECODE_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789#%&*";
 const DECODE_PAIRS = [
-  { line1: "NOTRE", line2: "ÉQUIPE" },
-  { line1: "BEST", line2: "CREW" },
+  { line1: "Notre", line2: "équipe" },
+  { line1: "Best", line2: "crew" },
 ] as const;
 const DECODE_INTERVAL_MS = 5000;
 const DECODE_DURATION_MS = 950;
@@ -506,7 +506,7 @@ export default function Team() {
 
         <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-5 md:pointer-events-auto md:static md:mx-auto md:block md:w-full md:max-w-7xl md:items-stretch md:justify-start md:px-10 md:pt-32">
           <div className="-translate-y-20 md:translate-y-0">
-            <h1 className="team-heading max-w-[9ch] text-center font-display text-[clamp(2.35rem,12vw,3.25rem)] font-semibold leading-[1.02] tracking-[-0.03em] uppercase text-white md:max-w-[10ch] md:text-left md:text-[clamp(1.35rem,3.2vw,2.25rem)] md:leading-[1.05]">
+            <h1 className="team-heading max-w-[9ch] text-center font-display text-[clamp(2.35rem,12vw,3.25rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-white md:max-w-[10ch] md:text-left md:text-[clamp(1.35rem,3.2vw,2.25rem)] md:leading-[1.05]">
               <span className="sr-only">Notre équipe — Best crew</span>
               <span aria-hidden="true" className="block">
                 {line1}
@@ -578,16 +578,18 @@ export default function Team() {
           />
         </div>
         <div
-          className="pointer-events-none absolute inset-0 z-0 hidden bg-[url('/img/bg-grey.png')] bg-cover bg-center bg-no-repeat bg-fixed md:block"
+          className="pointer-events-none absolute inset-0 z-0 hidden [clip-path:inset(0)] md:block"
           aria-hidden
-        />
+        >
+          <div className="fixed inset-0 bg-[url('/img/bg-grey.png')] bg-cover bg-center bg-no-repeat" />
+        </div>
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-16 md:px-10 md:py-24">
           <div className="max-w-xl">
             <p className="team-label text-[0.7rem] font-medium tracking-[0.22em] uppercase text-white/45">
               Équipe
             </p>
-            <p className="team-lead mt-4 max-w-lg font-display text-[clamp(1.15rem,2.8vw,1.65rem)] font-semibold leading-[1.2] tracking-[-0.02em] uppercase text-white">
+            <p className="team-lead mt-4 max-w-lg font-display text-[clamp(1.15rem,2.8vw,1.65rem)] font-semibold leading-[1.2] tracking-[-0.02em] text-white">
               Des talents confirmés
               <br />
               et émergents,
@@ -621,7 +623,7 @@ export default function Team() {
                   <div className="mt-3 text-center md:mt-4">
                     {member.name ? (
                       <>
-                        <p className="font-display text-sm font-semibold tracking-[-0.02em] uppercase text-white md:text-[0.95rem]">
+                        <p className="font-display text-sm font-semibold tracking-[-0.02em] text-white md:text-[0.95rem]">
                           {member.name}
                         </p>
                         {member.role ? (
@@ -706,7 +708,8 @@ export default function Team() {
               <X className="h-4 w-4" strokeWidth={1.75} />
             </button>
 
-            <div className="relative z-10 flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain md:flex-row md:overflow-hidden">
+            <div data-lenis-prevent
+              className="relative z-10 flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain md:flex-row md:overflow-hidden">
               <div className="relative flex shrink-0 items-start justify-center px-6 pt-2 pb-2 md:w-[42%] md:px-8 md:pt-16 md:pb-12">
                 <div className="relative aspect-[805/830] w-[68%] max-w-[18rem] md:w-full md:max-w-none">
                   <Image
@@ -720,13 +723,14 @@ export default function Team() {
                 </div>
               </div>
 
-              <div className="relative min-h-0 flex-1 px-6 pt-2 pb-[max(2.5rem,env(safe-area-inset-bottom))] md:overflow-y-auto md:px-10 md:pt-16 md:pb-12">
+              <div data-lenis-prevent
+              className="relative min-h-0 flex-1 px-6 pt-2 pb-[max(2.5rem,env(safe-area-inset-bottom))] md:overflow-y-auto md:px-10 md:pt-16 md:pb-12">
                 <p className="text-[0.65rem] font-medium tracking-[0.22em] uppercase text-white/45">
                   Profil
                 </p>
                 <h2
                   id={panelTitleId}
-                  className="mt-3 font-display text-[clamp(1.5rem,3.5vw,2.35rem)] font-semibold leading-[1.05] tracking-[-0.03em] uppercase text-white"
+                  className="mt-3 font-display text-[clamp(1.5rem,3.5vw,2.35rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-white"
                 >
                   {active.name}
                 </h2>

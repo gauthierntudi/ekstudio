@@ -184,6 +184,7 @@ export default function Header() {
               Menu
             </p>
             <nav
+              data-lenis-prevent
               className="flex min-h-0 flex-col justify-end gap-0 overflow-y-auto md:gap-1"
               aria-label="Navigation principale"
             >

@@ -29,7 +29,22 @@ export default function SectionScroll() {
     const isMobile = () =>
       window.matchMedia("(max-width: 768px), (pointer: coarse)").matches;
 
-    let unlockCall: gsap.core.Tween | null = null;
+    // Trackpad / Magic Mouse keep emitting inertial wheel events for ~1s after a
+    // swipe. Navigation stays locked until the wheel has been quiet for a moment,
+    // so one gesture = one section (no double jumps, no mid-tween restarts).
+    const WHEEL_QUIET_MS = 180;
+    let wheelLocked = false;
+    let quietTimer: ReturnType<typeof setTimeout> | undefined;
+    const armWheelUnlock = () => {
+      clearTimeout(quietTimer);
+      quietTimer = setTimeout(() => {
+        if (animating.current) armWheelUnlock();
+        else wheelLocked = false;
+      }, WHEEL_QUIET_MS);
+    };
+    const onAnyWheel = () => {
+      if (wheelLocked) armWheelUnlock();
+    };
 
     const goTo = (index: number) => {
       const sections = getSections();
@@ -50,11 +65,11 @@ export default function SectionScroll() {
       animating.current = true;
       current.current = next;
       lastNavAt.current = now;
-      unlockCall?.kill();
+      wheelLocked = true;
 
       gsap.to(window, {
-        duration: mobile ? 0.62 : 0.95,
-        ease: mobile ? "power2.out" : "power3.inOut",
+        duration: mobile ? 0.7 : 1.05,
+        ease: mobile ? "power3.out" : "power4.inOut",
         scrollTo: {
           y: sections[next],
           autoKill: false,
@@ -63,11 +78,8 @@ export default function SectionScroll() {
         onComplete: () => {
           animating.current = false;
           current.current = next;
+          armWheelUnlock();
         },
-      });
-
-      unlockCall = gsap.delayedCall(mobile ? 0.48 : 0.75, () => {
-        animating.current = false;
       });
 
       return true;
@@ -92,6 +104,7 @@ export default function SectionScroll() {
 
     const menuOpen = () => document.body.style.overflow === "hidden";
     const canNavigate = () => !menuOpen() && !animating.current;
+    const canWheel = () => canNavigate() && !wheelLocked;
 
     syncIndex();
 
@@ -100,14 +113,35 @@ export default function SectionScroll() {
       tolerance: 30,
       preventDefault: true,
       onDown: () => {
-        if (!canNavigate()) return;
+        if (!canWheel()) return;
         goTo(current.current + 1);
       },
       onUp: () => {
-        if (!canNavigate()) return;
+        if (!canWheel()) return;
         goTo(current.current - 1);
       },
     });
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (menuOpen() || e.altKey || e.ctrlKey || e.metaKey) return;
+      const el = e.target;
+      if (
+        el instanceof Element &&
+        el.closest("input, textarea, select, [contenteditable='true']")
+      ) {
+        return;
+      }
+      const nextKeys = ["ArrowDown", "PageDown", " "];
+      const prevKeys = ["ArrowUp", "PageUp"];
+      let target: number | null = null;
+      if (nextKeys.includes(e.key) && !(e.key === " " && e.shiftKey)) target = current.current + 1;
+      else if (prevKeys.includes(e.key) || (e.key === " " && e.shiftKey)) target = current.current - 1;
+      else if (e.key === "Home") target = 0;
+      else if (e.key === "End") target = getSections().length - 1;
+      if (target === null) return;
+      e.preventDefault();
+      if (!animating.current) goTo(target);
+    };
 
     const touchObserver = Observer.create({
       type: "touch",
@@ -179,6 +213,8 @@ export default function SectionScroll() {
     };
 
     window.addEventListener("resize", onResize);
+    window.addEventListener("wheel", onAnyWheel, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
     window.addEventListener("scroll", onScrollEnd, { passive: true });
     window.addEventListener("hashchange", goToHash);
     document.addEventListener("click", onAnchorClick);
@@ -186,8 +222,10 @@ export default function SectionScroll() {
     return () => {
       wheelObserver.kill();
       touchObserver.kill();
-      unlockCall?.kill();
+      clearTimeout(quietTimer);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("wheel", onAnyWheel);
+      window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("scroll", onScrollEnd);
       window.removeEventListener("hashchange", goToHash);
       document.removeEventListener("click", onAnchorClick);

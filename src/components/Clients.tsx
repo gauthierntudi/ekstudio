@@ -20,6 +20,8 @@ const CLIENTS = [
   "/clients/013.png",
   "/clients/014.png",
   "/clients/015.png",
+  "/clients/016.png",
+  "/clients/017.png",
 ];
 
 export default function Clients() {
@@ -95,7 +97,7 @@ export default function Clients() {
         <p className="clients-label text-left text-[0.7rem] font-medium tracking-[0.22em] uppercase text-black/40">
           Clients
         </p>
-        <h2 className="clients-title mt-4 max-w-[16ch] text-left font-display text-[clamp(1.55rem,4vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em] uppercase text-black">
+        <h2 className="clients-title mt-4 max-w-[16ch] text-left font-display text-[clamp(1.55rem,4vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-black">
           Ils nous font{" "}
           <span className="text-[color:var(--accent)]">confiance</span>
         </h2>

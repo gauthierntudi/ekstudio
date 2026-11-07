@@ -139,7 +139,7 @@ export default function Studio() {
               Credentials 2025
             </p>
 
-            <h2 className="studio-title max-w-[16ch] font-display text-[clamp(1.45rem,6.2vw,2.85rem)] font-semibold leading-[1.08] tracking-[-0.03em] uppercase text-black md:max-w-[14ch]">
+            <h2 className="studio-title max-w-[16ch] font-display text-[clamp(1.45rem,6.2vw,2.85rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-black md:max-w-[14ch]">
               Un laboratoire créatif au cœur de{" "}
               <span className="text-[color:var(--accent)]">Kinshasa</span>
             </h2>

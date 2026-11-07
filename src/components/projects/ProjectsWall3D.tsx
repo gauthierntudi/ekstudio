@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -58,12 +58,16 @@ function makeCardTexture(project: Project, cover: THREE.Texture) {
   ctx.fillStyle = "#050505";
   ctx.fillRect(0, 0, 768, 1024);
 
+  const rootStyle = getComputedStyle(document.documentElement);
+  const display = rootStyle.getPropertyValue("--ff-monument").trim() || "sans-serif";
+  const body = rootStyle.getPropertyValue("--ff-manrope").trim() || "sans-serif";
+
   ctx.fillStyle = "#ffffff";
-  ctx.font = "600 36px Syne, system-ui, sans-serif";
+  ctx.font = `800 30px ${display}`;
   ctx.textBaseline = "top";
   ctx.fillText(project.title, 28, 28);
   ctx.fillStyle = "rgba(255,255,255,0.4)";
-  ctx.font = "400 22px system-ui, sans-serif";
+  ctx.font = `400 22px ${body}`;
   ctx.textAlign = "right";
   ctx.fillText(project.subtitle, 740, 36);
   ctx.textAlign = "left";
@@ -98,7 +102,7 @@ function makeCardTexture(project: Project, cover: THREE.Texture) {
     ctx.fillRect(28, 100, 712, 760);
   }
 
-  ctx.font = "500 18px system-ui, sans-serif";
+  ctx.font = `500 18px ${body}`;
   let tagX = 28;
   for (const tag of project.tags) {
     const label = tag.toUpperCase();
@@ -168,6 +172,26 @@ type WallProps = {
 
 function CylindricalWall({ projects, curve, onSelect }: WallProps) {
   const covers = useTexture(projects.map((p) => p.cover));
+  // Canvas text only renders with fonts that are already loaded: redraw once they are.
+  const [fontsReady, setFontsReady] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    const css = getComputedStyle(document.documentElement);
+    const display = css.getPropertyValue("--ff-monument").trim();
+    const body = css.getPropertyValue("--ff-manrope").trim();
+    Promise.all([
+      document.fonts.load(`800 30px ${display}`),
+      document.fonts.load(`400 22px ${body}`),
+      document.fonts.load(`500 18px ${body}`),
+    ])
+      .catch(() => undefined)
+      .then(() => {
+        if (alive) setFontsReady(true);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
   const cardBySlug = useMemo(() => {
     const map: Record<string, THREE.Texture> = {};
     projects.forEach((project, index) => {
@@ -176,7 +200,9 @@ function CylindricalWall({ projects, curve, onSelect }: WallProps) {
       map[project.slug] = makeCardTexture(project, cover);
     });
     return map;
-  }, [covers, projects]);
+    // fontsReady: rebuild the card textures with the brand fonts once loaded
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [covers, projects, fontsReady]);
 
   const orbit = useRef({
     yaw: 0,

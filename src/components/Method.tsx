@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { gsap, useGSAP } from "@/lib/gsap";
+import CtaButton from "@/components/CtaButton";
 
 const IMAGES = [
   "/images/01.jpg",
@@ -199,47 +200,13 @@ export default function Method() {
           </div>
 
           <div className="method-cta grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto sm:min-w-[14rem] sm:flex-col sm:gap-4">
-            <a
-              href="/projets"
-              className="group relative inline-flex w-full min-w-0 items-stretch focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            >
-              <span className="relative z-10 flex min-w-0 flex-1 items-center bg-[color:var(--accent)] px-3 py-3 font-display text-[0.65rem] font-semibold tracking-[0.1em] uppercase text-black transition-[transform,background-color,color] duration-300 ease-out group-hover:-translate-y-0.5 group-hover:bg-white sm:px-6 sm:py-3.5 sm:text-sm sm:tracking-[0.14em] md:px-7">
-                Nos projets
-              </span>
-              <span
-                aria-hidden
-                className="relative z-10 flex w-9 shrink-0 items-center justify-center bg-white text-black transition-[transform,background-color,color] duration-300 ease-out group-hover:-translate-y-0.5 group-hover:bg-black group-hover:text-white sm:w-12 md:w-14"
-              >
-                <span className="inline-block transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:rotate-45">
-                  →
-                </span>
-              </span>
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-0 translate-x-1 translate-y-1 border border-white/25 transition-transform duration-300 ease-out group-hover:translate-x-2 group-hover:translate-y-2 sm:translate-x-1.5 sm:translate-y-1.5 sm:group-hover:translate-x-2.5 sm:group-hover:translate-y-2.5"
-              />
-            </a>
+            <CtaButton href="/projets" variant="accent" size="sm" block>
+              Nos projets
+            </CtaButton>
 
-            <a
-              href="/contact"
-              className="group relative inline-flex w-full min-w-0 items-stretch focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            >
-              <span className="relative z-10 flex min-w-0 flex-1 items-center border border-white/30 bg-transparent px-3 py-3 font-display text-[0.65rem] font-semibold tracking-[0.1em] uppercase text-white transition-[transform,background-color,color,border-color] duration-300 ease-out group-hover:-translate-y-0.5 group-hover:border-white group-hover:bg-white group-hover:text-black sm:px-6 sm:py-3.5 sm:text-sm sm:tracking-[0.14em] md:px-7">
-                Nous écrire
-              </span>
-              <span
-                aria-hidden
-                className="relative z-10 flex w-9 shrink-0 items-center justify-center border border-l-0 border-white/30 bg-transparent text-white transition-[transform,background-color,color,border-color] duration-300 ease-out group-hover:-translate-y-0.5 group-hover:border-white group-hover:bg-black group-hover:text-white sm:w-12 md:w-14"
-              >
-                <span className="inline-block transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:rotate-45">
-                  →
-                </span>
-              </span>
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-0 translate-x-1 translate-y-1 border border-white/15 transition-transform duration-300 ease-out group-hover:translate-x-2 group-hover:translate-y-2 sm:translate-x-1.5 sm:translate-y-1.5 sm:group-hover:translate-x-2.5 sm:group-hover:translate-y-2.5"
-              />
-            </a>
+            <CtaButton href="/contact" variant="outline" size="sm" block>
+              Nous écrire
+            </CtaButton>
           </div>
         </div>
       </div>

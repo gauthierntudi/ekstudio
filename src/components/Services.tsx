@@ -217,7 +217,7 @@ export default function Services() {
           {SERVICE_LINES.map((pair) => (
             <li
               key={pair.join("-")}
-              className="services-line font-display text-[clamp(0.7rem,2.2vw,1.05rem)] font-semibold leading-tight tracking-[0.06em] uppercase text-white"
+              className="services-line font-display text-[clamp(0.7rem,2.2vw,1.05rem)] font-semibold leading-tight tracking-[-0.01em] text-white"
             >
               <span>{pair[0]}</span>
               <span className="mx-2 text-white/35 md:mx-3" aria-hidden>

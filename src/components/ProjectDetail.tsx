@@ -233,7 +233,7 @@ export default function ProjectDetail({
 
             <div className="mt-5 flex flex-col gap-5 md:mt-8 md:flex-row md:items-end md:justify-between">
               <div className="min-w-0">
-                <h1 className="font-display text-[clamp(2rem,7vw,4.25rem)] font-semibold leading-[1.02] tracking-[-0.03em] uppercase text-white">
+                <h1 className="font-display text-[clamp(2rem,7vw,4.25rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-white">
                   {project.title}
                 </h1>
                 <div className="project-meta mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">

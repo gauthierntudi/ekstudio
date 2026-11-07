@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { gsap, useGSAP } from "@/lib/gsap";
+import CtaButton from "@/components/CtaButton";
 
 const BEATS = ["Elle parle.", "Elle touche.", "Elle agit."];
 
@@ -200,26 +201,7 @@ export default function Hero() {
           </div>
 
           <div className="hero-cta">
-            <a
-              href="/projets"
-              className="hero-cta-btn group relative inline-flex items-stretch focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            >
-              <span className="relative z-10 flex items-center bg-black px-6 py-3.5 font-display text-sm font-semibold tracking-[0.16em] uppercase text-white transition-[transform,background-color,color] duration-300 ease-out group-hover:-translate-y-0.5 group-hover:bg-white group-hover:text-black md:px-7 md:text-[0.8125rem]">
-                Découvrir
-              </span>
-              <span
-                aria-hidden
-                className="relative z-10 flex w-12 items-center justify-center overflow-hidden bg-white text-black transition-[transform,background-color,color] duration-300 ease-out group-hover:-translate-y-0.5 group-hover:bg-black group-hover:text-white md:w-14"
-              >
-                <span className="hero-cta-arrow inline-block transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:rotate-45">
-                  →
-                </span>
-              </span>
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-0 translate-x-1.5 translate-y-1.5 border border-black/40 transition-transform duration-300 ease-out group-hover:translate-x-2.5 group-hover:translate-y-2.5"
-              />
-            </a>
+            <CtaButton href="/projets">Découvrir</CtaButton>
           </div>
         </div>
 
